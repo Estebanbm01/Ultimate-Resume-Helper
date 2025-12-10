@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Tailoring Assistant - Get More Interviews</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Roboto:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&family=Lora:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            font-weight: 800;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.95;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        /* Main Content */
+        .content {
+            padding: 60px 40px;
+        }
+        
+        .error {
+            background: #fee;
+            border-left: 4px solid var(--danger);
+            color: #c33;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+        
+        /* Font Selector */
+        .font-selector-section {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .font-selector-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1em;
+        }
+        
+        .font-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .font-option {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            background: white;
+        }
+        
+        .font-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .font-option.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+        
+        .font-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .font-preview {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        
+        .label-icon {
+            font-size: 1.3em;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 15px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background: var(--light);
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        .char-counter {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            font-size: 0.85em;
+            color: var(--gray);
+            background: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            pointer-events: none;
+        }
+        
+        .sample-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .sample-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .btn {
+            padding: 20px 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        
+        .btn-text {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+        
+        .btn.loading .btn-text { display: none; }
+        .btn.loading .spinner { display: block; }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Output Section */
+        .output-section {
+            margin-top: 60px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5em;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .section-header p {
+            color: var(--gray);
+            font-size: 1.1em;
+        }
+        
+        .output-grid {
+            display: grid;
+            gap: 30px;
+        }
+        
+        .output-card {
+            background: var(--light);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .output-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+        }
+        
+        .card-header {
+            background: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .card-icon {
+            font-size: 1.5em;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .icon-btn {
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .icon-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .icon-btn.success {
+            border-color: var(--success);
+            background: var(--success);
+            color: white;
+        }
+        
+        .card-body {
+            padding: 30px;
+            background: white;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .card-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .card-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .card-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .output-content {
+            white-space: pre-wrap;
+            line-height: 1.8;
+            color: var(--dark);
+            font-size: 15px;
+        }
+        
+        /* Font Classes */
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-roboto { font-family: 'Roboto', sans-serif; }
+        .font-opensans { font-family: 'Open Sans', sans-serif; }
+        .font-lora { font-family: 'Lora', serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        
+        .copy-notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+        
+        .copy-notification.show {
+            display: flex;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .header .subtitle { font-size: 1em; }
+            .stats { flex-direction: column; gap: 15px; }
+            .form-section { grid-template-columns: 1fr; }
+            .content { padding: 30px 20px; }
+            .card-actions { flex-direction: column; }
+            .icon-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div id="copyNotification" class="copy-notification">
+        <span>✓</span>
+        <span>Copied to clipboard!</span>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🚀 AI Resume Tailoring Assistant</h1>
+            <p class="subtitle">Transform your resume into interview-winning applications using AI</p>
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Free Forever</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">30 sec</span>
+                    <span class="stat-label">Generation Time</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">3x</span>
+                    <span class="stat-label">More Interviews</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="content">
+            {% if error_message %}
+            <div class="error">
+                <span style="font-size: 1.5em;">⚠️</span>
+                <span>{{ error_message }}</span>
+            </div>
+            {% endif %}
+            
+            <!-- Font Selector -->
+            <div class="font-selector-section">
+                <div class="font-selector-header">
+                    <span>🎨</span>
+                    Choose Your Resume Font
+                </div>
+                <div class="font-options">
+                    <div class="font-option active" data-font="inter" onclick="selectFont('inter', this)">
+                        <div class="font-name" style="font-family: 'Inter', sans-serif;">Inter</div>
+                        <div class="font-preview" style="font-family: 'Inter', sans-serif;">Clean & Modern</div>
+                    </div>
+                    <div class="font-option" data-font="roboto" onclick="selectFont('roboto', this)">
+                        <div class="font-name" style="font-family: 'Roboto', sans-serif;">Roboto</div>
+                        <div class="font-preview" style="font-family: 'Roboto', sans-serif;">Professional</div>
+                    </div>
+                    <div class="font-option" data-font="opensans" onclick="selectFont('opensans', this)">
+                        <div class="font-name" style="font-family: 'Open Sans', sans-serif;">Open Sans</div>
+                        <div class="font-preview" style="font-family: 'Open Sans', sans-serif;">Friendly & Clear</div>
+                    </div>
+                    <div class="font-option" data-font="lora" onclick="selectFont('lora', this)">
+                        <div class="font-name" style="font-family: 'Lora', serif;">Lora</div>
+                        <div class="font-preview" style="font-family: 'Lora', serif;">Elegant Serif</div>
+                    </div>
+                    <div class="font-option" data-font="montserrat" onclick="selectFont('montserrat', this)">
+                        <div class="font-name" style="font-family: 'Montserrat', sans-serif;">Montserrat</div>
+                        <div class="font-preview" style="font-family: 'Montserrat', sans-serif;">Bold & Striking</div>
+                    </div>
+                </div>
+            </div>
+            
+            <form method="POST" id="resumeForm">
+                <input type="hidden" name="selected_font" id="selectedFont" value="inter">
+                
+                <div class="form-section">
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">📄</span>
+                            Your Master Resume
+                        </label>
+                        <textarea 
+                            name="resume" 
+                            id="resume" 
+                            rows="12" 
+                            placeholder="Paste your complete resume here... Include all experience, skills, and accomplishments. The more detail, the better AI can tailor it!"
+                            required></textarea>
+                        <div class="char-counter" id="resumeCounter">0 characters</div>
+                        <button type="button" class="sample-btn" onclick="loadSampleResume()">
+                            📝 Load Sample Resume
+                        </button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <span class="label-icon">💼</span>
+                            Job Description
+                        </label>
+                        <textarea 
+                            name="job_description" 
+                            id="job_description" 
+                            rows="12" 
+                            placeholder="Paste the complete job description here... Include requirements, responsibilities, and qualifications. Every detail helps!"
+                            required></textarea>
+                        <div class="char-counter" id="jobCounter">0 characters</div>
+                        <button type="button" class="sample-btn" onclick="loadSampleJob()">
+                            💼 Load Sample Job
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button type="submit" class="btn" id="submitBtn">
+                        <span class="btn-text">✨ Generate Tailored Application</span>
+                        <div class="spinner"></div>
+                    </button>
+                </div>
+            </form>
+            
+            {% if tailored_resume or cover_letter or bullet_variants %}
+            <div class="output-section">
+                <div class="section-header">
+                    <h2>🎉 Your Tailored Application</h2>
+                    <p>Download or copy these sections. Good luck with your application!</p>
+                </div>
+                
+                <div class="output-grid">
+                    {% if tailored_resume %}
+                    <div class="output-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">📝</span>
+                                Tailored Resume
+                            </div>
+                            <div class="card-actions">
+                                <button class="icon-btn" onclick="copyToClipboard('tailoredResume', this)" title="Copy to clipboard">
+                                    📋 Copy
+                                </button>
+                                <a href="/download/resume/word" class="icon-btn" style="text-decoration: none;">
+                                    📄 Word
+                                </a>
+                                <a href="/download/resume/pdf" class="icon-btn" style="text-decoration: none;">
+                                    📕 PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="output-content font-{{ selected_font }}" id="tailoredResume">{{ tailored_resume }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if cover_letter %}
+                    <div class="output-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">✉️</span>
+                                Cover Letter
+                            </div>
+                            <div class="card-actions">
+                                <button class="icon-btn" onclick="copyToClipboard('coverLetter', this)" title="Copy to clipboard">
+                                    📋 Copy
+                                </button>
+                                <a href="/download/cover/word" class="icon-btn" style="text-decoration: none;">
+                                    📄 Word
+                                </a>
+                                <a href="/download/cover/pdf" class="icon-btn" style="text-decoration: none;">
+                                    📕 PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="output-content font-{{ selected_font }}" id="coverLetter">{{ cover_letter }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if bullet_variants %}
+                    <div class="output-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <span class="card-icon">🎯</span>
+                                Bullet Point Variants
+                            </div>
+                            <div class="card-actions">
+                                <button class="icon-btn" onclick="copyToClipboard('bulletVariants', this)" title="Copy to clipboard">
+                                    📋 Copy
+                                </button>
+                                <a href="/download/bullets/word" class="icon-btn" style="text-decoration: none;">
+                                    📄 Word
+                                </a>
+                                <a href="/download/bullets/pdf" class="icon-btn" style="text-decoration: none;">
+                                    📕 PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="output-content font-{{ selected_font }}" id="bulletVariants">{{ bullet_variants }}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+        let currentFont = 'inter';
+        
+        // Font selection
+        function selectFont(fontName, element) {
+            currentFont = fontName;
+            document.getElementById('selectedFont').value = fontName;
+            
+            // Update active state
+            document.querySelectorAll('.font-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Update output content fonts
+            document.querySelectorAll('.output-content').forEach(content => {
+                content.className = `output-content font-${fontName}`;
+            });
+        }
+        
+        // Character counters
+        const resumeTextarea = document.getElementById('resume');
+        const jobTextarea = document.getElementById('job_description');
+        const resumeCounter = document.getElementById('resumeCounter');
+        const jobCounter = document.getElementById('jobCounter');
+        
+        resumeTextarea.addEventListener('input', () => {
+            resumeCounter.textContent = resumeTextarea.value.length + ' characters';
+        });
+        
+        jobTextarea.addEventListener('input', () => {
+            jobCounter.textContent = jobTextarea.value.length + ' characters';
+        });
+        
+        // Form submission with loading state
+        document.getElementById('resumeForm').addEventListener('submit', function() {
+            const btn = document.getElementById('submitBtn');
+            btn.classList.add('loading');
+        });
+        
+        // Copy to clipboard
+        function copyToClipboard(elementId, button) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification();
+                button.textContent = '✓ Copied!';
+                button.classList.add('success');
+                setTimeout(() => {
+                    button.textContent = '📋 Copy';
+                    button.classList.remove('success');
+                }, 2000);
+            });
+        }
+        
+        function showNotification() {
+            const notification = document.getElementById('copyNotification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Sample data
+        function loadSampleResume() {
+            document.getElementById('resume').value = `John Smith
+Software Engineer
+
+EXPERIENCE
+Senior Software Engineer | Tech Corp | 2020-Present
+- Led development of microservices architecture serving 1M+ users
+- Reduced API response time by 40% through optimization
+- Mentored team of 5 junior developers
+
+Software Engineer | StartupCo | 2018-2020
+- Built RESTful APIs using Python and Flask
+- Implemented CI/CD pipeline reducing deployment time by 60%
+- Collaborated with product team on feature development
+
+SKILLS
+Python, JavaScript, React, Node.js, AWS, Docker, PostgreSQL
+
+EDUCATION
+B.S. Computer Science | University of Tech | 2018`;
+            resumeCounter.textContent = document.getElementById('resume').value.length + ' characters';
+        }
+        
+        function loadSampleJob() {
+            document.getElementById('job_description').value = `Senior Full Stack Engineer
+
+We're looking for an experienced Full Stack Engineer to join our team.
+
+REQUIREMENTS:
+- 5+ years of software development experience
+- Strong proficiency in Python and JavaScript
+- Experience with cloud platforms (AWS, GCP, or Azure)
+- Knowledge of microservices architecture
+- Experience with containerization (Docker, Kubernetes)
+
+RESPONSIBILITIES:
+- Design and develop scalable web applications
+- Collaborate with cross-functional teams
+- Mentor junior developers
+- Participate in code reviews
+- Implement best practices for testing and deployment
+
+NICE TO HAVE:
+- Experience with React or Vue.js
+- Knowledge of DevOps practices
+- Previous startup experience`;
+            jobCounter.textContent = document.getElementById('job_description').value.length + ' characters';
+        }
+    </script>
+</body>
+</html>
