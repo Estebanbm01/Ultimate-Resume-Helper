@@ -268,7 +268,5 @@ def extract_section(text, start_marker, end_marker):
 if __name__ == "__main__":
     print("🚀 Starting AI Resume Tailoring Assistant...")
     print(f"✅ Gemini API configured")
-    print("📍 Open http://127.0.0.1:5000 in your browser")
-    if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
